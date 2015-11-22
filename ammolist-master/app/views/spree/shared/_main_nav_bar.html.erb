@@ -1,0 +1,18 @@
+<nav class="columns sixteen">
+  <div id="responsive-menu">
+  </div>
+  <ul id="main-nav-bar" class="inline" data-hook>
+    <li id="home-link" data-hook><%= link_to Spree.t(:home), spree.root_path %></li>
+    
+      <%= render :partial => 'spree/shared/taxonomies_nav' %>
+  </ul>
+  <ul id="main-nav-bar-right" class="inline" data-hook>
+    <li id="link-to-cart" data-hook>
+      <noscript>
+        <%= link_to Spree.t(:cart), '/cart' %>
+      </noscript>
+      &nbsp;
+    </li>
+    <script>Spree.fetch_cart()</script>
+  </ul>
+</nav>

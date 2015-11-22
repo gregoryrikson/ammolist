@@ -1,0 +1,105 @@
+  <tr>
+    <td colspan="5">
+      <strong><%= t(:shipping_upgrade) %></strong>
+      <input type='hidden' id='ship_id' value='<%= ship_id %>'>
+      <input type='hidden' id='shippingupgrade_count' value='<%= ship_upgrade_opts.count %>'>
+    </td>
+  </tr>
+
+<% i = 0 %>
+<% ship_upgrade_opts.each do |upgrade| %>
+  <tr class="show-shippingupgrade total">
+    <td colspan="4">
+        <%= check_box_tag('order[shipments_attributes]['+i.to_s+'][selected_shipment_upgrade_id_][]', upgrade.id, upgrade.selected, disabled: true, :data => { "shipment-id" => ship_id }) %>
+        <%= upgrade.shipping_method_upgrade.shipping_upgrade.name %>
+    </td>
+    <td class="total" align="center">
+        <span><%= upgrade.display_cost %></span>
+    </td>
+    <% if i == 1 %>
+    <td class="actions">
+      <% if true %>
+        <%= link_to '', '#', :class => 'edit-shippingupgrade fa fa-edit no-text with-tip', :data => {:action => 'edit'}, :title => Spree.t('edit') %>
+      <% end %>
+    </td>
+    <% end %>
+  </tr>
+  <% i +=1 %>
+<% end %>
+
+
+<% i = 0 %>
+<% ship_upgrade_opts.each do |upgrade| %>
+  <tr class="edit-shippingupgrade hidden total">
+    <td colspan="4">
+        <%= check_box_tag('order[shipments_attributes]['+i.to_s+'][selected_shipment_upgrade_id][]', upgrade.id, upgrade.selected, disabled: status, :data => { "shipment-id" => ship_id }) %>
+        <%= upgrade.shipping_method_upgrade.shipping_upgrade.name %>
+    </td>
+    <td class="total" align="center">
+        <span><%= upgrade.display_cost %></span>
+    </td>
+    <% if i == 1 %>
+    <td class="actions">
+      <% if true %>
+        <%= link_to '', '#', :class => 'save-shippingupgrade fa fa-ok no-text with-tip', :data => {'shipment-number' => shipment_number, :action => 'save'}, :title => Spree.t('actions.save') %>
+        <%= link_to '', '#', :class => 'cancel-shippingupgrade fa fa-cancel no-text with-tip',
+          :data => {:action => 'cancel'}, :title => Spree.t('actions.cancel') %>
+      <% end %>
+    </td>
+    <% end %>
+  </tr>
+  <% i +=1 %>
+<% end %>
+
+<script type="text/javascript">
+// Shipments AJAX API
+$(document).ready(function () {
+  var toggleShippingUpgradeEdit = function(event) {
+    event.preventDefault();
+
+    var link = $(this);
+    link.parents('tbody').find('tr.edit-shippingupgrade').toggle();
+    link.parents('tbody').find('tr.show-shippingupgrade').toggle();
+  }
+
+  // handle shippingupgrade edit click
+  $('a.edit-shippingupgrade').click(toggleShippingUpgradeEdit);
+  $('a.cancel-shippingupgrade').click(toggleShippingUpgradeEdit);
+
+  $('[data-hook=admin_shipment_form] a.save-shippingupgrade').on('click', function (event) {
+    event.preventDefault();
+
+    var shipment_id = $("#ship_id").val();
+    var size_shipment_upgrades_option = $("#shippingupgrade_count").val();
+    var shipment_upgrade = [];
+
+    for (var i = 0; i < size_shipment_upgrades_option; i++) {
+      var shipment_upgrade_value = document.getElementById("order_shipments_attributes_"+i+"_selected_shipment_upgrade_id_").value
+      var shipment_upgrade_checked = document.getElementById("order_shipments_attributes_"+i+"_selected_shipment_upgrade_id_").checked
+      shipment_upgrade[i] = {
+                                shipment_id : shipment_id,
+                                shipment_upgrade_value : shipment_upgrade_value,
+                                shipment_upgrade_checked : shipment_upgrade_checked
+                            };
+      $("#order_shipments_attributes_"+i+"_selected_shipment_upgrade_id__").prop('checked', shipment_upgrade_checked);
+    }
+
+ 
+    $.ajax({
+        type : "POST",
+        url  : "/admin/orders/update_shipment_upgrade",
+        dataType: 'json',
+        data: {dataSend : shipment_upgrade},
+        success: function(data) {
+            var link = $('a.save-shippingupgrade');
+            link.parents('tbody').find('tr.edit-shippingupgrade').toggle();
+            link.parents('tbody').find('tr.show-shippingupgrade').toggle();
+            $(".order-total").html(data[0].display_total);
+        }
+    });
+
+  });
+
+});
+</script>
+

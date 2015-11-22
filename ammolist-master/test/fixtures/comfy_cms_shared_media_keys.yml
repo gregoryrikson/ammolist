@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  shared_media_id: 1
+  name: MyString
+  value: MyString
+
+two:
+  shared_media_id: 1
+  name: MyString
+  value: MyString

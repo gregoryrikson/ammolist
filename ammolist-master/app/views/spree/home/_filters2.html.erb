@@ -1,0 +1,118 @@
+<div id="filters2">
+<div id="col1">
+  <div id="step_1" class="arrow_box">
+    <%= t(:check_caliber) %>
+  </div>
+  <% taxon_keys = @taxonomies_opt.keys; %>
+  <div id='taxon_list'>
+    <% top_taxon_key = taxon_keys[0] %>
+      <h2 class="home-h2"><span class="taxon_title dropdown-open" data-dropdown="#dropdown-0"><%= top_taxon_key %><span>↑</span></span></h2>
+      <div id="dropdown-0" class="dropdown" style="display: block;">
+      <ul class="dropdown-menu">
+        <% v = @taxonomies_opt[top_taxon_key] %>
+        <% i = 0 %>
+        <% v.each do |taxon| %>
+          <% break if i >= Ammolist::Config[:top_taxons_number] %>
+          <% if taxon_has_instock_products(taxon) %>
+            <li>
+            <% i+= 1 %>
+          <% else %>
+            <li style="display: none">
+          <% end %>   
+            <label>
+              <%= check_box_tag 'taxon_ids[]', taxon.id, false, {:id => "taxon_ids_#{taxon.id}", class: 'taxon_check'} %>
+              <h3 class="home-h3"><%= link_to taxon.name, seo_url(taxon), :onclick => 'return false;' %></h3>
+            </label>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+    <% for i in 1..taxon_keys.length-1 %>
+      <% taxon_key = taxon_keys[i] %>
+      <% dropdown_id = "dropdown-"+i.to_s %>
+      <h2 class="home-h2"><span class="taxon_title" data-dropdown="#<%= dropdown_id %>"><%= taxon_key %><span>↓</span></span></h2>
+      <div id="<%= dropdown_id %>" class="dropdown">
+      <ul class="dropdown-menu">
+        <% v = @taxonomies_opt[taxon_key] %>
+        <% v.each do |taxon| %>
+        <% if taxon_has_instock_products(taxon) %>
+          <li>
+        <% else %>
+          <li style="display: none">
+        <% end %>          
+          <label>
+          <%= check_box_tag 'taxon_ids[]', taxon.id, false, {:id => "taxon_ids_#{taxon.id}", class: 'taxon_check'} %>
+          <h3 class="home-h3"><%= link_to taxon.name, seo_url(taxon), :onclick => 'return false;' %></h3>
+          </label>
+        </li>
+        <% end %>
+      </ul> 
+    </div>
+    <% end %> 
+  </div>
+</div>
+
+<div id="col2">
+  <h2 class="home-title"><%= t(:filter_results_by) %>:</h2>
+  <br/>
+  <div id='in_stock_filter'>
+  </div>
+  <br/>
+  <div id="step_2" class="arrow_box">
+    <%= t(:step_2) %><br/>
+    <%= t(:select_filter) %>
+  </div>
+
+  <div id='list-properties'>
+  </div>
+
+
+  <div id='email-me'>
+    <p>
+      Notify My Ammolist to My Email frequently
+      <br>
+    </p>
+    <form id="ammolist-register" action="" method="get">
+      <input name="email" id="email" type="text" value="<%= spree_current_user.email if spree_current_user %>">
+      <label class="error" for="email"></label>
+      <input id="register-button" value="Register" type="submit">
+      <p id="register-response"></p> 
+    </form>
+  </div>
+  <br/>
+
+  <div id='features'>
+    <h2 class="home-title"><%= t(:features) %>:</h2>
+    <%= render :partial => 'homepage_properties' if @properties %>
+  </div>
+
+</div>
+
+  <div id="col3">
+    <div class="affix_add-to-cart">
+      <h2 class="home-title">
+        <%= (spree_current_user.nil?) ? t(:your_ammolist) : spree_current_user.bill_address.nil? ? t(:your_ammolist) : spree_current_user.bill_address.full_name+" "+t(:ammolist) %>:
+      </h2>
+      <div id="loading-icon">
+        <div class="loading-icon-img"></div>Adding new rows
+      </div>
+      <div class="add-to-cart">
+        <%= button_tag :class => 'large primary', :id => 'add-to-cart-button', :type => :submit do %>
+          <%= Spree.t(:add_to_cart) %>
+        <% end %>
+      </div>
+    </div>
+    <br/>
+    <%= form_for :order, :url => populate_orders_path do |f| %>
+      <table id="products_list" class="display" cellspacing="0" width="100%">
+        <thead>
+          <tr><th>Image</th><th>Name</th><th>Price</th><th>Price Per Round</th><th>Total Order</th></tr>
+        </thead>
+      </table>
+      <div id="loading-time" style="float: right;">
+        Loading time: <span></span> s
+      </div>
+      <br/>
+    <% end %>
+  </div>
+</div>

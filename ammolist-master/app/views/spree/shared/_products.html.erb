@@ -1,0 +1,127 @@
+<%
+  paginated_products = @searcher.retrieve_products if params.key?(:keywords)
+  paginated_products ||= products
+%>
+
+<% content_for :head do %>
+  <% if paginated_products.respond_to?(:num_pages) %>
+    <%= rel_next_prev_link_tags paginated_products %>
+  <% end %>
+<% end %>
+
+<div data-hook="products_search_results_heading">
+  <% if products.empty? %>
+    <div data-hook="products_search_results_heading_no_results_found">
+      <%= Spree.t(:no_products_found) %>
+    </div>
+  <% elsif params.key?(:keywords) %>
+    <div data-hook="products_search_results_heading_results_found">
+      <h6 class="search-results-title"><%= Spree.t(:search_results, :keywords => h(params[:keywords])) %></h6>
+    </div>
+  <% end %>
+</div>
+
+<% if products.any? %>
+<ul id="products" class="inline product-listing" data-hook>
+  <% products.each do |product| %>
+    <%  
+        out_of_stock = false
+        quantity = product.property('Quantity')
+        manufacturer = product.property('Manufacturer')
+        bullet_weight = product.property('Bullet Weight')
+        bullet_type = product.property('Bullet Type')
+        primer_type = product.property('Primer Type')
+        ammo_casing = product.property('Ammo Casing')
+    %>
+    <% url = product_path(product, :taxon_id => @taxon.try(:id)) %>
+    <li id="product_<%= product.id %>" data-hook="products_list_item" itemscope itemtype="http://schema.org/Product">
+    <% cache(@taxon.present? ? [I18n.locale, current_currency, @taxon, product] : [I18n.locale, current_currency, product]) do %>
+      <div class="left-side">
+        <div class="product-img">
+          <%= link_to small_image(product, :itemprop => "image"), url, :itemprop => 'url' %>
+        </div>
+      </div>
+      <div class="right-side">
+        <h2 class="product-title-h2"><%= link_to truncate(product.name, :length => 200), url, :class => 'info', :itemprop => "name", :title => product.name %></h2>
+        
+        <% if product.price_in(current_currency) and !product.price.nil? %>
+          <div class="availability-box">
+          <p class="availability">
+          <% if product.master.can_supply? && product.master.total_on_hand > 0 %>
+              <span class="stock-qty"><%= product.master.total_on_hand %></span><span class="instock">in stock</span>
+          <% elsif product.variants.empty? || product.master.total_on_hand == 0 %>
+              <% out_of_stock = true %>
+              <span class="outstock"><%= Spree.t(:out_of_stock) %></span>
+          <% end %>
+          </p>
+          </div>
+
+          <div class="col1">
+            <div id="product-price">
+              <h6 class="product-section-title"><%= Spree.t(:price) %></h6>
+              <div>
+                <span class="price selling" itemprop="price">
+                  <%= display_price(product) %>
+                </span>
+                <span itemprop="priceCurrency" content="<%= product.currency %>"></span>
+              </div>
+            </div>
+          </div>
+
+
+          <div class="col2">
+            <% if quantity && quantity.to_i > 0 && display_price(product) %>
+              <p class="price-round"><%= display_price_per_round(product, quantity) %> per round</p>
+            <% end %>
+            <% unless out_of_stock %>
+            <div class="add-to-cart">
+              <%= form_for :order, :url => populate_orders_path do |f| %>
+                <%= hidden_field_tag "variant_id", product.master.id %>
+                <%= hidden_field_tag :quantity, 1 %>
+                <%= button_tag :class => 'medium primary', :id => 'add-to-cart-button', :type => :submit do %>
+                  <%= Spree.t(:add_to_cart) %>
+                <% end %>
+              <% end %>
+            </div>
+            <% end %>
+          </div>
+
+        <% end %>
+
+        <div class="product-properties" id=data-hook="product_properties">
+          <table id="product-properties" class="table-display" data-hook>
+            <tbody>
+              <% if quantity %>
+              <tr>
+                <td>Quantity - <%= quantity %></td>
+              </tr>
+              <% end %>
+              <% if manufacturer %>
+              <tr>
+                <td>Manufacturer - <%= manufacturer %></td>
+              </tr>
+              <% end %>
+              <% if bullet_weight || bullet_type %>
+              <tr>
+                <td>Bullets - <%= bullet_weight if bullet_weight %> <%= bullet_type if bullet_type %></td>
+              </tr>
+              <% end %>
+              <% if primer_type || ammo_casing %>
+              <tr>
+                <td>Casings - <%= primer_type if primer_type %> <%= ammo_casing if ammo_casing %></td>
+              </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <% end %>
+    </li>
+  <% end %>
+  <% reset_cycle("classes") %>
+</ul>
+<% end %>
+
+<% if paginated_products.respond_to?(:num_pages) %>
+  <%= paginate paginated_products %>
+<% end %>

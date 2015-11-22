@@ -1,0 +1,15 @@
+<%= form_for @product.questions.new, html: { multipart: true }, method: :post do |f| %>
+  <%= f.hidden_field :product_id, value: @product.id %>
+  <%= f.field_container :content do %>
+    <%= f.label :content, raw(Spree::Question.model_name.human + content_tag(:span, ' *', class: 'required')) %>
+    <br>
+    <%= f.text_area :content, { rows: "4", cols: "50" } %>
+    
+    <%= f.file_field :image %>
+    
+    
+    <%= f.error_message_on :content %>
+  <% end %>
+  <br>
+  <%= f.submit t(:ask_question) %>
+<% end %>

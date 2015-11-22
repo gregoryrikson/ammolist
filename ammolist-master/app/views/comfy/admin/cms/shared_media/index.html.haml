@@ -1,0 +1,27 @@
+.page-header
+  %h2= t('.title')
+
+- content_for :right_column do
+  = render 'comfy/admin/cms/sites/mirrors'
+
+= render 'comfy/admin/cms/partials/shared_media_before'
+
+%table.table.table-hover.table-bordered
+  %tbody.sortable
+    - @shared_media.each do |shared_media|
+      %tr{:id => dom_id(shared_media)}
+        %td
+          .icon
+            - if @site.shared_media.count > 1
+              .dragger
+                %span &#8645;
+        %td.main
+          .item-title
+            = link_to shared_media.name, edit_comfy_admin_cms_site_shared_medium_path(@site, shared_media)
+          .item-meta
+            = shared_media.name
+        %td
+          .btn-group.btn-group-sm
+            = link_to t('.edit'), edit_comfy_admin_cms_site_shared_medium_path(@site, shared_media), :class => 'btn btn-default'
+
+= render 'comfy/admin/cms/partials/shared_media_after'

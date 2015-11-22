@@ -1,0 +1,10 @@
+<% if flash[:error_message].present? %>
+  $(".guest_flash_message").addClass('error_flash_message').html("<%= flash[:error_message] %>");
+<% else %>
+  <% success = flash.discard(:success)
+    if success %>
+       show_flash('success', "<%= j success %>")
+    <% end %>
+  $('#user_content').html("<%= escape_javascript(render(:partial => 'index')) %>");
+  $('#sidebar').html("<%= escape_javascript(render(:partial => 'sidebar')) %>");
+<% end %>

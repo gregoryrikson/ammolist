@@ -1,0 +1,44 @@
+#sidebar-menu {
+  ul {
+    list-style: none;
+
+    li {
+      a {
+        &.active-open {
+          font-weight: bold;
+        }
+      }
+    }
+
+    ul {
+      padding-left: 0px;
+      -webkit-padding-start: 0px;
+      li a {
+        padding-left: 7px;
+      }
+      ul {
+        display: none;
+      }
+    }
+  }
+
+  .js-guides {
+    display: none;
+    li i {
+      cursor: pointer;
+    }
+  }
+
+  .js-topic h3 a i {
+    cursor: pointer;
+  }
+
+  h3 a {
+    font-size: 14px;
+    text-transform: uppercase;
+    &.active, &.active-open {
+      font-weight: bold;
+    }
+  }
+
+}

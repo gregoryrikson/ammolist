@@ -1,0 +1,67 @@
+<div id="filters">
+  <% if @taxonomies_opt %>
+    <%= select_tag :home_products_filter, grouped_options_for_select(@taxonomies_opt, nil, {prompt: Spree.t(:choose_caliber)}) %>
+  <% end %> 
+
+  <br/><br/>
+  <table id="products_list" class="display" cellspacing="0" width="100%">
+    <thead>
+      <tr><th>Name</th><th>Price</th><th>Price Per Round</th><th>Order</th></tr>
+    </thead>
+  </table>
+      
+
+</div>
+
+
+<%= javascript_tag do -%>
+var table = null;
+$("#products_list").hide();
+$("#home_products_filter").select2();
+$('#home_products_filter').on("change", function() {
+  if ($(this).val() != ""){
+    $("#products_list").show();
+    if (table == null){
+      table = $('#products_list').DataTable({
+        "ajax": {    
+          "url": Spree.routes.taxon_all_products,
+          "data": function ( d ) {
+            d.id = $('#home_products_filter').val();
+          },
+          "dataSrc": ""
+        },
+        "columns": [
+          { 
+            "data": null,
+            "width": "40%",
+            "render": function ( data, type, full, meta ) {
+              return '<a href="'+data.url+'">'+data.name+'</a>';
+            } 
+          },
+          {
+            "data": "price",
+            "width": "20%" 
+          },
+          { 
+            "data": "perround",
+            "width": "20%" 
+          },
+          { 
+            "data": null,
+            "width": "20%",
+            "orderable": false,
+            "render": function ( data, type, full, meta ) {
+              return '<form accept-charset="UTF-8" action="/orders/populate" method="post"><input id="variant_id" name="variant_id" type="hidden" value="'+data.id+'" /><div class="add-to-cart" style="margin:0px;"><button class="small primary" id="add-to-cart-button" name="button" type="submit">Add To Cart</button></div></form>';
+            } 
+          }
+        ],
+        "order": [[ 2, "asc" ]]
+      });
+    }else{
+      table.ajax.reload();
+    }
+  }else{
+    table.clear().draw();
+  }
+});
+<% end %>

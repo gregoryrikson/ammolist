@@ -1,0 +1,37 @@
+<% if @taxon.parent %>
+  <% content_for :sidebar do %>
+    <div id="taxon_list" data-hook="taxon_sidebar_navigation">
+      <%= render partial: 'spree/shared/taxon_select' %>
+    </div>
+    <br/>
+    <div id="search-bar" data-hook>
+      <%= render :partial => 'spree/shared/search' unless @taxon.children.empty? %>
+    </div>
+  <% end %>
+<% end %>
+
+<h1 class="taxon-title"><%= @taxon.name %></h1>
+
+<div data-hook="taxon_products">
+  <%= render partial: 'spree/shared/products', locals: { products: @products, taxon: @taxon } if @taxon.children.empty? %>
+</div>
+
+<% unless params[:keywords].present? %>
+  <div data-hook="taxon_children">
+    <% cache [I18n.locale, @taxon] do %>
+      <%= render partial: 'taxon_children', collection: sort_taxon_by_first_number(@taxon.children) %>
+    <% end %>
+  </div>
+<% end %>
+
+<% if @taxon.children.empty?  %>
+  <% content_for :right_sidebar do %>
+    <div id="search-bar" data-hook>
+      <%= render :partial => 'spree/shared/search' %>
+    </div>
+    <br/>
+    <div data-hook="taxon_right_sidebar_navigation">
+      <%= render partial: 'spree/shared/linked_filters' %>
+    </div>
+  <% end %>
+<% end %>

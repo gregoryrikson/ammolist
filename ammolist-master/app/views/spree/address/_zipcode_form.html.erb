@@ -1,0 +1,11 @@
+<% address_id = address_type.chars.first %>
+<div class="inner" data-hook=<%="#{address_type}_inner" %>>
+  <%= form.hidden_field :country_id, :value => Spree::Country.find_by(name: "United States").id %>
+  <%= hidden_field_tag "form_origin", "cart" %>
+  <p class="field" id=<%="#{address_id}zipcode" %>>
+    <%= form.text_field :zipcode, :size => 6, :placeholder => t(:zip_postal_code) %>
+    <%= button_tag :class => 'primary', :id => 'get-quote-button' do %>
+      <%= t(:get_quote) %>
+    <% end %>
+  </p>
+</div>

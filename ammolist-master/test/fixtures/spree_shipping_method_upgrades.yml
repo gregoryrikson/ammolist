@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  shipping_method_id: 1
+  shipping_upgrade_id: 1
+  calculated_value: 1
+
+two:
+  shipping_method_id: 1
+  shipping_upgrade_id: 1
+  calculated_value: 1

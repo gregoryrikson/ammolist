@@ -1,0 +1,13 @@
+<h5 class="stock-shipping-upgrade-title"><%= t(:shipping_upgrade) %></h5>
+<ul class="field checkbox shipping-methods">
+  <% ship_upgrade_opts.each do |upgrade| %>
+  <li class="shipping-upgrade">
+    <label>
+      <%= check_box_tag('order[shipments_attributes]['+ship_form_id.to_s+'][selected_shipment_upgrade_id][]', upgrade.id, upgrade.selected, :data => { "shipment-id" => ship_id }) %>
+      <span class="upgrade-name"><%= upgrade.shipping_method_upgrade.shipping_upgrade.name %></span>              
+      <span class="upgrade-cost"><%= upgrade.display_cost %></span>
+    </label>
+    <br/>
+  </li>
+  <% end %>
+</ul>

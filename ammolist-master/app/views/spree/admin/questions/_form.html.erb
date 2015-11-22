@@ -1,0 +1,21 @@
+<div data-hook="admin_product_question_form_fields">
+  <%= f.field_container :content do %>
+    <%= f.label :content, raw(Spree::Question.model_name.human + content_tag(:span, ' *', class: 'required')) %>
+    <%= f.text_area :content, { rows: "4", class: 'fullwidth' } %>
+    <%= f.error_message_on :content %>
+  <% end %>
+
+  <%= f.fields_for :answer, @question.answer_for_form do |a| %>
+    <%= a.label :content, raw(Spree::Answer.model_name.human + content_tag(:span, ' *', class: 'required')) %>
+    <%= a.text_area :content, { rows: "4", class: 'fullwidth' } %>
+  <% end %>
+
+  <%= f.field_container :is_visible do %>
+    <%= f.check_box :is_visible %>
+    <%= f.label :is_visible %>
+  <% end %>
+  
+  <%= image_tag @question.image_url(:small) if @question.image? %>
+  
+  
+</div>

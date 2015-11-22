@@ -1,0 +1,70 @@
+<div id='homepage-properties'>
+  <% @properties.each do |prop| %>
+    <%= raw(prop.content_cache) %>
+  <% end %>
+</div>
+
+<%= javascript_tag do -%>
+  $( "#newsletter-signup" ).validate({
+    rules: {
+      email: {
+        required: true,
+        email: true
+      }
+    }
+  });
+  $('#newsletter-signup').submit(function(e){
+
+        var isvalidate=$(this).valid();
+        if(isvalidate)
+        {
+            e.preventDefault();
+          //setup variables
+          var form = $(this),
+          formData = form.serialize(),
+          formUrl = Spree.routes.email_subscribe,
+          formMethod = form.attr('method'),
+          responseMsg = $('#signup-response')
+   
+          //show response message - waiting
+          responseMsg.hide()
+                     .removeClass()
+                     .addClass('response-waiting')
+                     .text('Please Wait...')
+                     .fadeIn(200);
+
+          //send data to server
+          $.ajax({
+              url: formUrl,
+              type: formMethod,
+              data: formData,
+              success:function(data){
+              //setup variables
+              var jsonData = $.parseJSON(data);
+              responseData = jsonData[0];
+              var klass = '';
+              //response conditional
+              switch(responseData.status){
+                  case 'error':
+                      klass = 'response-error';
+                  break;
+                  case 'success':
+                      klass = 'response-success';
+                  break; 
+              }
+              //show reponse message
+              responseMsg.fadeIn(200,function(){
+                  $(this).removeClass()
+                     .addClass(klass)
+                     .text(responseData.message)
+                     .fadeIn(200)
+               });
+
+              }
+          })
+   
+          //prevent form from submitting
+          //return false;
+      }
+    })
+<% end %>

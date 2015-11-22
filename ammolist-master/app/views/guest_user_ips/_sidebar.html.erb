@@ -1,0 +1,27 @@
+<div class="box align-center">
+  <div style="border:1px solid;">
+    <%= form_for(:guest_ip, url: '/guest_user_ips', method: :get, remote: true) do |f| %>
+      <div class="field">
+        IP Address <br>
+        <%= text_field_tag :ip_address %>
+      </div>    
+      <div data-hook="admin_users_index_search_buttons">
+        <%= f.submit 'Search', :class => 'fa fa-search button' %>
+      </div><br/>
+    <% end %>
+  </div>
+  <br/>
+
+  <div style="border:1px solid;">
+    <div class="guest_flash_message"> </div>
+    <%= form_for(:guest_ip, url: '/guest_user_ips/block_guest', method: :post, remote: true) do |f| %>
+      <div class="field">
+        Enter IP Address <br>
+        <%= text_field_tag :ip_address %>
+      </div>      
+      <div data-hook="admin_users_index_search_buttons">
+        <%= f.submit 'Block', :class => 'fa fa-search button' %>
+      </div><br/>
+    <% end %>
+  </div>
+</div>

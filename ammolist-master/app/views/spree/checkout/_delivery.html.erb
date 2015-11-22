@@ -1,0 +1,116 @@
+<fieldset id='shipping_method' data-hook>
+  <legend align="center"><%= Spree.t(:delivery) %></legend>
+  <div class="inner" data-hook="shipping_method_inner">
+    <div id="methods">
+      <% is_an_option = false %>
+      <%= form.fields_for :shipments do |ship_form| %>
+
+        <div class="shipment">
+          <h3 class="stock-location" data-hook="stock-location">
+            <%= Spree.t(:package_from) %>
+            <strong class="stock-location-name" data-hook="stock-location-name"><%= ship_form.object.stock_location.name %></strong>
+          </h3>
+
+          <table class="stock-contents" data-hook="stock-contents">
+            <colgroup>
+              <col style="width: 10%;" />
+              <col style="width: 60%;" />
+              <col style="width: 10%;" />
+              <col style="width: 20%;" />
+            </colgroup>
+            <thead>
+              <th></th>
+              <th align='left'><%= Spree.t(:item) %></th>
+              <th><%= Spree.t(:qty) %></th>
+              <th><%= Spree.t(:price) %></th>
+            </thead>
+            <tbody>
+              <% ship_form.object.manifest.each do |item| %>
+                <tr class="stock-item">
+                  <td class="item-image"><%= mini_image(item.variant) %></td>
+                  <td class="item-name"><%= item.variant.name %></td>
+                  <td class="item-qty"><%= item.quantity %></td>
+                  <td class="item-price"><%= display_price(item.variant) %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+
+          <h5 class="stock-shipping-method-title"><%= Spree.t(:shipping_method) %></h5>
+          <ul class="field radios shipping-methods">
+            <% is_represented = true %>
+            <% ship_form.object.shipping_rates.each do |rate| %>
+              <li class="shipping-method">
+                <% disallow_message = ship_form.object.disallow_message(rate) %>
+                <label>
+                  <%= ship_form.radio_button :selected_shipping_rate_id, rate.id, :class => is_represented ? "required": "", :title => is_represented ? "Please choose one or update your cart": "", :disabled => disallow_message.empty? ? false : true, :data => { "shipment-id" => ship_form.object.id, "shipment_form_id" => ship_form.index}  %>
+                  <% is_represented = false %>
+                  <span class="rate-name"><%= rate.name %></span>
+                  <span class="rate-cost"><%= rate.display_cost %></span>
+                  <% if disallow_message.empty? %>
+                    <% is_an_option = true %>
+                  <% else %>
+                    <span class="rate-disallow" style="color: red;"><%= "Can't be selected: "+disallow_message %></span>
+                  <% end %>
+                </label>
+              </li>
+            <% end %>
+            <br/>
+            <label style="display: none;" class="error" for="order[shipments_attributes][<%=ship_form.index%>][selected_shipping_rate_id]"></label>
+
+          </ul>
+          <div id="shipping_upgrade_<%=ship_form.index%>">
+            <%= render :partial => 'spree/checkout/shipping_upgrade_form', :locals => { :ship_id => ship_form.object.id, :ship_form_id => ship_form.index, :ship_upgrade_opts => ship_form.object.shipment_upgrades_options } %>
+          </div>
+        </div>
+        <br/>
+      <% end %>
+
+      <% if @differentiator.try(:missing?) %>
+        <div class="shipment unshippable">
+          <h3 class="stock-location" data-hook="stock-location">
+            <%= Spree.t(:unshippable_items) %>
+          </h3>
+          <table class="stock-contents" data-hook="stock-missing">
+            <colgroup>
+              <col style="width: 10%;" />
+              <col style="width: 60%;" />
+              <col style="width: 10%;" />
+              <col style="width: 20%;" />
+            </colgroup>
+            <thead>
+              <th></th>
+              <th align='left'><%= Spree.t(:item) %></th>
+              <th><%= Spree.t(:qty) %></th>
+              <th><%= Spree.t(:price) %></th>
+            </thead>
+            <tbody>
+              <% @differentiator.missing.each do |variant, quantity| %>
+                <tr class="stock-item">
+                  <td class="item-image"><%= mini_image(variant) %></td>
+                  <td class="item-name"><%= variant.name %></td>
+                  <td class="item-qty"><%= quantity %></td>
+                  <td class="item-price"><%= display_price(variant) %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      <% end %>
+
+    </div>
+    <% if Spree::Config[:shipping_instructions] %>
+      <p id="minstrs" data-hook>
+        <%= form.label :special_instructions, Spree.t(:shipping_instructions) %><br />
+        <%= form.text_area :special_instructions, :cols => 40, :rows => 7 %>
+      </p>
+    <% end %>
+  </div>
+</fieldset>
+
+<br />
+
+<div class="form-buttons" data-hook="buttons">
+  <%= submit_tag Spree.t(:save_and_continue), :class => 'continue button primary', :disabled => is_an_option ? false : true %>
+  <%= is_an_option ? "" : "<label class='error' >Can't be submited: you should choose one shipment method above or modify your cart</label>".html_safe %>
+</div>

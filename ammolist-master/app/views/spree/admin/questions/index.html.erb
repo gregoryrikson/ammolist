@@ -1,0 +1,63 @@
+<%= content_for :page_actions do %>
+  <li>
+    <%= button_link_to t(:new_question), new_admin_product_question_url(@product), { icon: 'icon-plus', id: 'admin_new_question' } %>
+  </li>
+<% end %>
+
+<%= render partial: 'spree/admin/shared/product_sub_menu' %>
+<%= render partial: 'spree/admin/shared/product_tabs', locals: { current: t('questions_and_answers') } %>
+
+<%= paginate @collection %>
+
+<% if @collection.any? %>
+  <table class="index" id="listing_questions">
+    <colgroup>
+      <col style="width: 80%;"/>
+      <col style="width: 20%;"/>
+    </colgroup>
+    <thead>
+      <tr data-hook="admin_product_questions_index_headers">
+        <th><%= t('questions_and_answers') %></th>
+        <th data-hook="admin_product_questions_index_header_actions" class="actions"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @collection.each do |question| %>
+        <tr class="<%= cycle('odd', 'even') %>">
+          <td>
+            <p>
+              <strong><%= Spree::Question.model_name.human %>:</strong><br>
+              <%= question.try(:content) %>
+            </p>
+            <p>
+              <strong><%= Spree::Answer.model_name.human %>:</strong><br>
+              <% if question.answer.present? %>
+                <%= question.answer.content %>
+              <% else %>
+                <span class="no_answer"><%= t('question.no_answer') %></span>
+              <% end %>
+            </p>
+            <small>
+              <% if question.user.present? %>
+                <%= t('question.asked_by') %> <%= link_to question.user.email, [:admin, question.user] if question.user.present? %>
+              <% end %>
+              <%= t('question.is_visible') %> - <%= question.is_visible %>
+            </small>
+          </td>
+          <td class="actions" data-hook="admin_product_questions_index_row_actions">
+            <%= link_to_edit question, no_text: true, class: 'edit' %>
+            &nbsp;
+            <%= link_to_delete question, no_text: true %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <div class="alpha twelve columns no-objects-found">
+    <%= Spree.t(:no_resource_found, resource: Spree::Question.model_name.human) %>,
+    <%= link_to Spree.t(:add_one), new_admin_product_question_url %>!
+  </div>
+<% end %>
+
+<%= paginate @collection %>

@@ -1,0 +1,10 @@
+<div class="row checkout_content" data-step="<%= state %>" data-hook="checkout_content" id="checkout_<%= state %>">    
+  <div class="columns alpha omega twelve" data-hook="checkout_form_wrapper">
+  <%= render :partial => 'spree/shared/error_messages', :locals => { :target => order } %>
+
+  <%= form_for order, :url => update_checkout_path(state), :html => { :id => "checkout_form_#{state}" } do |form| %>
+    <%= render 'spree/checkout/delivery', :form => form %>
+  <% end %>
+  <script>Spree.hideDeliveryDivs();</script>
+  </div>
+</div>

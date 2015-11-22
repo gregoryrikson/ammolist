@@ -1,0 +1,51 @@
+<% filters = @taxon ? @applicable_filters : [] %>
+<% unless filters.empty? %>
+
+  <% if params[:search] %>
+  <div class="navigation" data-hook="navigation">
+    <h6 class="filter-title"> Filter Results by: </h6>
+    <ul class="filter_choices">
+      <% filters.each do |filter| %>
+        <% labels = filter[:labels] || filter[:conds].map {|m,c| [m,m]} %>
+        <% unless labels.empty? %>
+          <% urlink = "" %>
+          <% if params[:search] && params[:search][filter[:scope]] %>
+            <% urlink = url_for(:utf8 => "✓", :per_page => Spree::Config[:products_per_page] ) %>
+            <% params[:search].each do |k, v| %>
+              <% next if k == filter[:scope].to_s %>
+                <% urlink += "&search["+k+"][]=" + v[0] %>
+            <% end %>
+            <%= filter[:name] + ": " + params[:search][filter[:scope]][0] %>
+            <a href="<%= urlink %>" title="Remove This Item"/> X </a><br/>
+          <% end %>
+        <% end %>
+      <% end %>
+      <a href="<%= url_for(:only_path => false) %>"/> Clear All </a><br/>
+    </ul>
+  </div>
+  <% end %>
+
+  <% filters.each do |filter| %>
+    <% labels = filter[:labels] || filter[:conds].map {|m,c| [m,m]} %>
+    <% next if labels.empty? %>
+    <% next if params[:search] && params[:search][filter[:scope]] %>
+    <div class="navigation" data-hook="navigation">
+      <h6 class="filter-title"> <%= filter[:name] %> </h6>
+      <ul class="filter_choices">
+        <% urlink = "" %>
+        <% labels.each do |nm,val| %>
+          <li class="nowrap">
+            <% label = "#{filter[:name]}_#{nm}".gsub(/\s+/,'_') %>
+            <% if url_for(:only_path => false) == request.original_url %>
+              <% urlink = url_for(:search => { filter[:scope] => [nm]}, :utf8 => "✓", :per_page => Spree::Config[:products_per_page] ) %>
+            <% else %>
+              <% urlink = request.original_url + "&search["+filter[:scope].to_s+"][]=" + nm %>
+            <% end %>
+            <label class="nowrap" for="<%= label %>"><a href="<%= urlink.to_s %>"/><%= nm %></a> (<%= val %>)</label>
+          </li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+<% end %>

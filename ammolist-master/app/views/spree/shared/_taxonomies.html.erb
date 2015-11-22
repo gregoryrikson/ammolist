@@ -1,0 +1,12 @@
+<% max_level = Spree::Config[:max_level_in_taxons_menu] || 1 %>
+<aside id="sidebar" class="four columns">
+  <nav id="sidebar-menu" class="sidebar-item" data-hook>
+    <ul>
+      <% @taxonomies.each do |taxonomy| %>
+        <% cache [I18n.locale, taxonomy, max_level] do %>
+          <%= taxons_tree_defined(taxonomy.root, @taxon, max_level) %>
+        <% end %>
+      <% end %>
+    </ul>
+  </nav>
+</aside>

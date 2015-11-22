@@ -1,0 +1,16 @@
+/*
+* This is a manifest file that includes stylesheets for spree_frontend 
+
+ *= require skeleton/skeleton
+ *= require spree/frontend/screen
+ *= require spree/frontend/ammoscreen
+ *= require spree/frontend/sidebar
+ *= require jquery-ui/themes/smoothness/jquery-ui
+ *= require select2
+ *= require datatables/jquery.dataTables.min
+ *= require datatables/dataTables.jqueryui
+ *= require magnific-popup
+ *= require slicknav/slicknav
+ *= require jquery-dropdown/jquery.dropdown
+ *= require spree/frontend/jquery.countdown
+*/

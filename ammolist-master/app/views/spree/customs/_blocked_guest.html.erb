@@ -1,0 +1,11 @@
+<td><%= @guest_ip.ip_address %></td>
+<td>
+  <a href="/customs/blocked_guest?guest_id=<%= @guest_ip.id %>" class=" button <%= @guest_ip.block ? 'blocked' : 'active' %>" data-disable-with="Process..." data-remote="true" >
+    <%= @guest_ip.block ? 'blocked' : 'active' %>
+  </a>
+</td>
+<td>
+  <%= link_to "Delete", "/guest_user_ips/#{@guest_ip.id}", method: :delete%>
+</td>
+
+

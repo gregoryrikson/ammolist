@@ -1,0 +1,62 @@
+<% @body_id = 'cart' %>
+<div data-hook="cart_container">
+  <h1><%= Spree.t(:shopping_cart) %></h1>
+
+  <% if @order.line_items.empty? %>
+
+    <div data-hook="empty_cart">
+      <p><%= Spree.t(:your_cart_is_empty) %></p>
+      <p><%= link_to Spree.t(:continue_shopping), root_path, :class => 'button continue' %></p>
+    </div>
+
+  <% else %>
+
+    <div data-hook="outside_cart_form">
+        <div data-hook="inside_cart_form">
+
+          <div id="cart_items">        
+            <%= render :partial => 'form', :locals => { :order => @order } %>
+          </div>
+
+          <div id="cart_shipping" class="links2 columns four omega" data-hook="cart_upgrade">
+            <div class="modal"></div>
+            <h3>Estimate Shipping</h3>
+            <div id="cart_shipping_form">
+              <p>Where would you like your order shipped?</p>
+              <% state = 'address' %>
+              <%= form_for @order, :url => update_checkout_path(state), :remote => true, :html => { :id => "checkout_form_#{state}" }, :data => {:step => state} do |form| %>
+                <%= form.fields_for :bill_address do |bill_form| %>
+                  <%= render :partial => 'spree/address/zipcode_form', :locals => { :form => bill_form, :address_type => 'billing', :address => @order.bill_address } %>
+                <% end %>
+              <% end %>
+            </div>
+            <div id="cart_shipping_list">
+              <%= render :partial => 'spree/shared/error_messages', :locals => { :target => @order } %>
+              <% state = 'delivery' %>
+              <%= form_for @order, :url => update_checkout_path(state), :remote => true, :html => { :id => "checkout_form_#{state}" }, :data => {:step => state} do |form| %>
+                <%= render :partial => 'delivery_form', :locals => { :form => form, :order => @order, :state => state } %>
+              <% end %>
+            </div>
+          </div>
+
+          <div id="cart_buttons" class="links2 coupons2 columns four alpha" data-hook>
+            <%= form_tag empty_cart_path, :method => :put do %>
+              <%#= submit_tag Spree.t(:empty_cart), :class => 'button gray' %>
+              <%#= Spree.t(:or) %>
+              <%= link_to Spree.t(:continue_shopping), root_path, :class => 'continue button gray continue_custom' %>
+            <% end %>
+          </div>
+        </div>        
+        <div>
+          <ul class="timer"></ul>
+          <ul class="counter_text"><li>Time remaining for shipping the same day.</li></ul>
+        </div>
+    </div>
+  <% end %>
+</div>
+
+<script>
+  $(document).ready(function(){
+    runCountDownTimer();
+  });
+</script>

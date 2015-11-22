@@ -1,0 +1,7 @@
+<% if flash[:success].present? %>
+  <% success = flash.discard(:success)
+    if success %>
+       show_flash('success', "<%= j success %>")
+    <% end %>
+  $("#guest_tr_<%= @guest_ip.id %>").remove();
+<% end %>

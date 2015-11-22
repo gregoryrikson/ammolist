@@ -1,0 +1,81 @@
+<%= render :partial => 'spree/admin/shared/configuration_menu' %>
+
+<% content_for :page_title do %>
+  <%= Spree.t(:active_shipping_settings) %>
+<% end %>
+
+<%= form_tag admin_active_shipping_settings_path, :method => :put  do |form| %>
+  <div id="preferences" data-hook>
+    <fieldset class="general no-border-top">
+
+      <div class="row">
+        <div class="alpha six columns">
+          <fieldset class="currency no-border-bottom">
+            <legend align="center"><%= Spree.t(:general_settings)%></legend>
+            <% @preferences_GeneralSettings.each do |key|
+                type = @config.preference_type(key) %>
+                <div class="field">
+                  <%= label_tag(key, Spree.t(key) + ': ') + tag(:br) if type != :boolean %>
+                  <%= '¢' if key == :handling_fee %>
+                  <%= preference_field_tag(key, @config[key], :type => type) %>
+                  <%= label_tag(key, Spree.t(key)) + tag(:br) if type == :boolean %>
+                </div>
+            <% end %>
+          </fieldset>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="alpha six columns">
+          <fieldset class="security no-border-bottom">
+            <legend align="center"><%= Spree.t(:ups_settings)%></legend>
+            <% @preferences_UPS.each do |key|
+                type = @config.preference_type(key) %>
+                <div class="field">
+                  <%= label_tag(key, Spree.t(key) + ': ') + tag(:br) if type != :boolean %>
+                  <%= preference_field_tag(key, @config[key], :type => type) %>
+                  <%= label_tag(key, Spree.t(key)) + tag(:br) if type == :boolean %>
+                </div>
+            <% end %>
+          </fieldset>
+        </div>
+        <div class="omega six columns">
+          <fieldset class="currency no-border-bottom">
+            <legend align="center"><%= Spree.t(:fedex_settings)%></legend>
+            <% @preferences_FedEx.each do |key|
+                type = @config.preference_type(key) %>
+                <div class="field">
+                  <%= label_tag(key, Spree.t(key) + ': ') + tag(:br) if type != :boolean %>
+                  <%= preference_field_tag(key, @config[key], :type => type) %>
+                  <%= label_tag(key, Spree.t(key)) + tag(:br) if type == :boolean %>
+                </div>
+            <% end %>
+          </fieldset>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="alpha six columns">
+          <fieldset class="security no-border-bottom">
+            <legend align="center"><%= Spree.t(:usps_settings)%></legend>
+            <% @preferences_USPS.each do |key|
+                type = @config.preference_type(key) %>
+                <div class="field">
+                  <%= label_tag(key, Spree.t(key) + ': ') + tag(:br) if type != :boolean %>
+                  <%= preference_field_tag(key, @config[key], :type => type) %>
+                  <%= label_tag(key, Spree.t(key)) + tag(:br) if type == :boolean %>
+                </div>
+            <% end %>
+          </fieldset>
+        </div>
+      </div>
+
+      <div class="form-buttons filter-actions actions" data-hook="buttons">
+        <%= button Spree.t(:update), 'icon-refresh' %>
+        <span class="or"><%= Spree.t(:or) %></span>
+        <%= link_to_with_icon 'icon-remove', Spree.t(:cancel), edit_admin_active_shipping_settings_url, :class => 'button' %>
+      </div>
+
+    </fieldset>
+  </div>
+<% end %>

@@ -1,0 +1,114 @@
+# Files in the config/locales directory are used for internationalization
+# and are automatically loaded by Rails. If you want to use locales other
+# than English, add the necessary files in this directory.
+#
+# To use the locales, use `I18n.t`:
+#
+#     I18n.t 'hello'
+#
+# In views, this is aliased to just `t`:
+#
+#     <%= t('hello') %>
+#
+# To use a different locale, set it with `I18n.locale`:
+#
+#     I18n.locale = :es
+#
+# This would use the information in config/locales/es.yml.
+#
+# To learn more, please read the Rails Internationalization guide
+# available at http://guides.rubyonrails.org/i18n.html.
+
+en:
+  hello: "Hello world"
+  choose_caliber: "Choose Caliber"
+  product_list: "Product List"
+  ammolist: "Ammolist"
+  your_ammolist: "Your Ammolist"
+  filter_results_by: "Filter Results by"
+  features: "Features"
+  please_choose_filter: "Now to create Your Ammolist select at least one check box filter"
+  ammunition_out_of_stock: "Sorry, ammunitions for this caliber are out of stock"
+  step_1: "Step 1"
+  step_2: "Step 2"
+  select_caliber: "Select a caliber"
+  check_caliber: "Check a caliber"
+  select_filter: "Select a filter"
+  processing: "Processing"
+  shipping_constraints: "Shipping Constraints"
+  new_shipping_constraint: "New Shipping Constraint"
+  back_to_shipping_constraints_list: "Back To Shipping Constraints List"
+  minimum: "Minimum"
+  maximum: "Maximum"
+  is_shared: "Shared"
+  is_active: "Active"
+  shipping_upgrade: "Shipping Upgrades"
+  zipcode: "Zipcode"
+  zip_postal_code: "Zip/Postal Code"
+  get_quote: "Get a Quote"
+  
+  questions_and_answers: 'Questions & Answers'
+  new_question: 'New question'
+  back_to_questions_list: 'Back to questions list'
+  ask_question: 'Ask a question'
+  do_you_have_any_questions: 'Do you have any questions?'
+  products_with_pending_questions: 'Products with pending questions'
+  no_pending_questions: "There's no pending questions"
+  go_to_questions: "Go to questions"
+  question:
+    content: 'Content'
+    asked_by: 'Asked by'
+    is_visible: 'Visible in front'
+    no_answer: "There's no answer yet"
+    sent: 'Question sent, we will answer it soon!'
+  answer_email:
+    subject: 'Your question has been answered'
+    your_question: 'Your question:'
+  
+  activerecord:
+    attributes:
+      spree/page:
+        body: Body
+        title: Title
+    models:
+      spree/ammunition:
+        few: Ammunitions
+        many: Ammunitions
+        one: Ammunition
+        other: Ammunitions
+
+  comfy:
+    admin:
+      cms:
+        base:
+          shared_media: "Shared Media"
+        shared_media:
+          index:
+            title: Shared Media
+          not_found: "Shared Media not found"
+          form:
+            access_properties: "Access Properties"
+            create: "Create"
+            update: "Update"
+          updated: Shared Media updated
+          update_failure: Failed to update Shared Media
+          edit:
+            title: Editing Shared Media
+
+  spree:
+    fedex_login: "FedEx Production Meter Number"
+    fedex_password: "FedEx Production Password"
+    fedex_account: "FedEx Account Number"
+    fedex_key: "FedEx Authentication Key"
+    selected_quantity_not_available: ! 'Selected of %{item} is not available. We just have %{total_on_hand}.'
+    admin:
+      tab:
+        ammunitions: Ammunitions
+    back_to_ammunitions_list: "Back to ammunitions list"
+    ammunition: Ammunition
+    ammunitions: Ammunitions Facts
+    ammunition_content:
+      ammunition_facts: Ammunition Facts
+      new_ammunition: New ammunition
+      editing_page: Editing ammunition
+      link: Link

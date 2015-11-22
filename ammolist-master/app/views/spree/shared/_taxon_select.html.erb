@@ -1,0 +1,25 @@
+<% @taxons = @taxon && @taxon.parent ? @taxon.parent.children : Spree::Taxon.roots %>
+<% if @taxon.parent.id == 1 %>
+  <% @sorted_taxons = sort_main_taxon_by_list(@taxons) %>
+<% else %>
+  <% @sorted_taxons = sort_taxon_by_first_number(@taxons) %>
+<% end %>
+<ul style="list-style: none;">
+  <% @sorted_taxons.each do |taxon| %>
+  <li>
+    <h2 class="category-page-h2"><%= link_to taxon.name, seo_url(taxon) %></h2>
+    <% if @taxon.parent.id == 1 %>
+    <% taxon_children = AmmolistTaxonCaliber.by_point.where(:taxon_id => taxon.children).limit(10).map{ |t| t.taxon } %>
+      <% if taxon_children %>
+        <ul id="sub-category">
+          <% taxon_children.each do |taxon_child| %>
+          <li>
+            <h3 class="category-page-h3"><%= link_to taxon_child.name, seo_url(taxon_child) %></h3>
+          </li>
+          <% end %>
+        </ul>
+      <% end %>
+    <% end %>
+  </li>
+  <% end %>
+</ul>

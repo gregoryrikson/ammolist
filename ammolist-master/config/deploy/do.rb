@@ -1,0 +1,1 @@
+server 'ammo@n1.ammolist.com', user: 'ammo', roles: %w{app db web}

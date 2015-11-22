@@ -1,0 +1,41 @@
+<div class="modal"></div>
+<%= form_for order, :url => update_cart_path, :html => {:id => 'update-cart'}, :remote => true do |order_form| %>
+  <div data-hook="cart_items">
+    <%= render :partial => 'spree/shared/error_messages', :locals => { :target => @order } %>
+    <table id="cart-detail" data-hook>
+      <thead>
+        <tr data-hook="cart_items_headers">
+          <th class="cart-item-description-header" colspan="2"><%= Spree.t(:item) %></th>
+          <th class="cart-item-price-header"><%= Spree.t(:price) %></th>
+          <th class="cart-item-quantity-header"><%= Spree.t(:qty) %></th>
+          <th class="cart-item-total-header"><%= Spree.t(:total) %></th>
+          <th class="cart-item-delete-header"></th>
+        </tr>
+      </thead>
+      <tbody id="line_items" data-hook>
+        <%= render partial: 'spree/orders/line_item', collection: order_form.object.line_items, locals: {order_form: order_form} %>
+      </tbody>
+      <% if @order.adjustments.nonzero.exists? || @order.line_item_adjustments.nonzero.exists? || @order.shipment_adjustments.nonzero.exists? || @order.shipments.any? %>
+        <tr class="cart-subtotal">
+          <td colspan="4" align='right'><h5><%= Spree.t(:cart_subtotal, :count => @order.line_items.sum(:quantity)) %></h5></th>
+          <td colspan><h5><%= order_form.object.display_item_total %></h5></td>
+          <td></td>
+        </tr>
+        <%= render "spree/orders/adjustments" %>
+      <% end %>
+      <tr class="cart-total">
+        <td colspan="4" align='right'><h5><%= Spree.t(:total) %></h5></th>
+        <td colspan><h5><%= order_form.object.display_total %></h5></td>
+        <td></td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="links2 columns five cart2 omega" data-hook="cart_buttons">
+    <%= order_form.text_field :coupon_code, :size => 10, :placeholder => Spree.t(:coupon_code) %>
+    <%= button_tag :class => 'primary', :id => 'update-button' do %>
+      <%= Spree.t(:update) %>
+    <% end %><div style="height:10px;"></div>
+    <%= link_to Spree.t(:checkout), checkout_path, :class => 'button checkout primary', :id => 'checkout-link', :name => 'checkout' %>
+  </div>
+<% end %>

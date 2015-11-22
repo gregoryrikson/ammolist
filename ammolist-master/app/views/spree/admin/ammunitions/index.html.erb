@@ -1,0 +1,48 @@
+<%= render 'spree/admin/shared/configuration_menu' %>
+
+<% content_for :page_actions do %>
+  <li><%= button_link_to Spree.t("ammunition_content.new_ammunition"), new_object_url, :icon => 'icon-plus', :id => 'admin_new_ammunition' %></li>
+<% end %>
+
+<% content_for :page_title do %>
+   <%= Spree.t("ammunition_content.ammunition_facts") %>
+<% end %>
+
+<% if @ammunitions.any? %>
+<table class="index responsive" id="listing_ammunitions" data-hook>
+  <colgroup>
+    <col style="width: 30%">
+    <col style="width: 55%">
+    <col style="width: 15%">
+  </colgroup>
+  <thead>
+    <tr data-hook="admin_ammunitions_index_headers">
+      <th><%= Spree::Ammunition.human_attribute_name(:title) %></th>
+      <th><%= Spree::Ammunition.human_attribute_name(:body) %></th>
+      <th data-hook="admin_ammunitions_index_header_actions" class="actions"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @ammunitions.each do |ammunition| %>
+      <tr data-hook="admin_ammunitions_index_rows" class="<%= cycle('odd', 'even') %>" id="<%= dom_id ammunition %>">
+        <td>
+          <%= ammunition.title %>
+        </td>
+        <td>
+          <%= ammunition.body.truncate(200) if ammunition.body %>
+        </td>
+        <td class="actions" data-hook="admin_ammunitions_index_row_actions">
+          <%= link_to_edit ammunition, :no_text => true %>
+          <%= link_to_delete ammunition, :no_text => true %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<% else %>
+  <div class="alpha twelve columns no-objects-found">
+    <%= Spree.t(:no_resource_found, resource: I18n.t(:other, scope: 'activerecord.models.spree/ammunition')) %>,
+    <%= link_to Spree.t(:add_one), spree.new_admin_ammunition_path %>!
+  </div>
+<% end %>

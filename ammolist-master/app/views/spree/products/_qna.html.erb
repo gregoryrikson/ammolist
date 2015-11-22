@@ -1,0 +1,20 @@
+<% if @product.questions.answered.visible.present? %>
+  <div class="row">
+    <h6 class="product-section-title"><%= t(:questions_and_answers) %></h6>
+    <% @product.questions.answered.visible.each_with_index do |question, index| %>
+      <div class="qna">
+        <div class="question"><%= "#{index+1}. #{question.content}" %></div>
+        <div class="answer"><%= question.answer.content %></div>
+        <div class="image"><%= image_tag question.image_url(:thumb) if question.image? %> </div>
+      </div>
+    <% end %>
+  </div>
+<% end %>
+<% if spree_current_user.present? %>
+  <div class="row">
+    <h6 class="product-section-title"><%= t(:do_you_have_any_questions) %></h6>
+    <div class='question_form'>
+      <%= render 'question_form' %>
+    </div>
+  </div>
+<% end %>

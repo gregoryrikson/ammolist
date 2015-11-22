@@ -1,0 +1,21 @@
+= render 'comfy/admin/cms/partials/shared_media_form_before', :form => form
+
+= form.text_field :name
+
+= form.text_area :info
+
+= form.form_group :is_active do
+  = form.check_box :is_active, :label => t('is_active')
+
+- if @shared_media.shared_media_keys.present?
+  = field_set_tag t('.access_properties') do
+    = form.fields_for :shared_media_keys do |smk|
+      = smk.text_field :name
+      = smk.text_area :value
+      %br/
+
+= render 'comfy/admin/cms/partials/shared_media_form_after', :form => form
+
+= form.form_group :class => 'form-actions' do
+  = form.submit t(@shared_media.new_record?? '.create' : '.update'), :class => 'btn btn-primary'
+  = link_to t('.cancel'), comfy_admin_cms_site_shared_media_path, :class => 'btn btn-link'
