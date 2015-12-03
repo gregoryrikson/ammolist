@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151016223003) do
+ActiveRecord::Schema.define(version: 20151020163604) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -256,6 +256,16 @@ ActiveRecord::Schema.define(version: 20151016223003) do
     t.datetime "updated_at"
   end
 
+  create_table "spree_answers", force: true do |t|
+    t.integer  "question_id"
+    t.integer  "user_id"
+    t.text     "content"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "spree_answers", ["question_id"], name: "index_spree_answers_on_question_id", using: :btree
+
   create_table "spree_assets", force: true do |t|
     t.integer  "viewable_id"
     t.string   "viewable_type"
@@ -342,18 +352,6 @@ ActiveRecord::Schema.define(version: 20151016223003) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  create_table "spree_feedback_reviews", force: true do |t|
-    t.integer  "user_id"
-    t.integer  "review_id",              null: false
-    t.integer  "rating",     default: 0
-    t.text     "comment"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "spree_feedback_reviews", ["review_id"], name: "index_spree_feedback_reviews_on_review_id", using: :btree
-  add_index "spree_feedback_reviews", ["user_id"], name: "index_spree_feedback_reviews_on_user_id", using: :btree
 
   create_table "spree_gateways", force: true do |t|
     t.string   "type"
@@ -566,12 +564,10 @@ ActiveRecord::Schema.define(version: 20151016223003) do
   add_index "spree_preferences", ["key"], name: "index_spree_preferences_on_key", unique: true, using: :btree
 
   create_table "spree_prices", force: true do |t|
-    t.integer  "variant_id",                                 null: false
-    t.decimal  "amount",            precision: 10, scale: 2
+    t.integer  "variant_id",                          null: false
+    t.decimal  "amount",     precision: 10, scale: 2
     t.string   "currency"
     t.datetime "deleted_at"
-    t.decimal  "ammofree_amount",   precision: 10, scale: 2
-    t.decimal  "ammoreward_amount", precision: 10, scale: 2
   end
 
   add_index "spree_prices", ["deleted_at"], name: "index_spree_prices_on_deleted_at", using: :btree
@@ -613,21 +609,19 @@ ActiveRecord::Schema.define(version: 20151016223003) do
   add_index "spree_product_properties", ["property_id"], name: "index_spree_product_properties_on_property_id", using: :btree
 
   create_table "spree_products", force: true do |t|
-    t.string   "name",                                         default: "",   null: false
+    t.string   "name",                 default: "",   null: false
     t.text     "description"
     t.datetime "available_on"
     t.datetime "deleted_at"
     t.string   "slug"
     t.text     "meta_description"
-    t.text     "meta_keywords"
+    t.string   "meta_keywords"
     t.integer  "tax_category_id"
     t.integer  "shipping_category_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "promotionable",                                default: true
+    t.boolean  "promotionable",        default: true
     t.string   "meta_title"
-    t.decimal  "avg_rating",           precision: 7, scale: 5, default: 0.0,  null: false
-    t.integer  "reviews_count",                                default: 0,    null: false
     t.integer  "ammunition_id"
   end
 
@@ -747,6 +741,18 @@ ActiveRecord::Schema.define(version: 20151016223003) do
     t.datetime "updated_at"
   end
 
+  create_table "spree_questions", force: true do |t|
+    t.integer  "product_id"
+    t.integer  "user_id"
+    t.text     "content"
+    t.boolean  "is_visible", default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "image"
+  end
+
+  add_index "spree_questions", ["product_id"], name: "index_spree_questions_on_product_id", using: :btree
+
   create_table "spree_refund_reasons", force: true do |t|
     t.string   "name"
     t.boolean  "active",     default: true
@@ -840,20 +846,6 @@ ActiveRecord::Schema.define(version: 20151016223003) do
 
   add_index "spree_return_items", ["customer_return_id"], name: "index_return_items_on_customer_return_id", using: :btree
   add_index "spree_return_items", ["exchange_inventory_unit_id"], name: "index_spree_return_items_on_exchange_inventory_unit_id", using: :btree
-
-  create_table "spree_reviews", force: true do |t|
-    t.integer  "product_id"
-    t.string   "name"
-    t.string   "location"
-    t.integer  "rating"
-    t.text     "title"
-    t.text     "review"
-    t.boolean  "approved",   default: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.integer  "user_id"
-    t.string   "ip_address"
-  end
 
   create_table "spree_roles", force: true do |t|
     t.string "name"
@@ -1173,11 +1165,6 @@ ActiveRecord::Schema.define(version: 20151016223003) do
 
   add_index "spree_taxons_prototypes", ["prototype_id"], name: "index_spree_taxons_prototypes_on_prototype_id", using: :btree
   add_index "spree_taxons_prototypes", ["taxon_id"], name: "index_spree_taxons_prototypes_on_taxon_id", using: :btree
-
-  create_table "spree_temp_variants", id: false, force: true do |t|
-    t.integer "id",  null: false
-    t.string  "sku"
-  end
 
   create_table "spree_tokenized_permissions", force: true do |t|
     t.integer  "permissable_id"
